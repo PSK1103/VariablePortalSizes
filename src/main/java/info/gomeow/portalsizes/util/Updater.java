@@ -21,25 +21,29 @@ public class Updater {
         connection.setReadTimeout(10000);
         connection.setUseCaches(false);
         Document feed = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(connection.getInputStream());
-        newVersion = feed.getElementsByTagName("title").item(1).getTextContent();
+        newVersion = feed.getElementsByTagName("title").item(1).getTextContent().substring(1);
         String link = feed.getElementsByTagName("link").item(1).getTextContent();
         this.link = new BufferedReader(new InputStreamReader(new URL("http://is.gd/create.php?format=simple&url=" + link).openStream())).readLine();
-        update = link != oldVersion;
+        if(v.contains("SNAPSHOT") && !newVersion.equals(oldVersion)) {
+            update = false;
+            return;
+        }
+        update = !newVersion.equals(oldVersion);
     }
-    
+
     private String oldVersion;
     private String newVersion;
     private String link;
     private boolean update;
-    
+
     public boolean getUpdate() {
         return update;
     }
-    
+
     public String getNewVersion() {
         return newVersion;
     }
-    
+
     public String getLink() {
         return link;
     }
