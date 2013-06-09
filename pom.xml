@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>info.gomeow</groupId>
     <artifactId>portalsizes</artifactId>
-    <version>1.0.0</version>
+    <version>0.1.0</version>
     <name>VariablePortalSizes</name>
     <build>
         <defaultGoal>clean package install</defaultGoal>
