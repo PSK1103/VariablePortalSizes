@@ -1,0 +1,7 @@
+#Set this to the max size you want portals to be. It can go no higher than 1000.
+max-portal-size: 1000
+#Set this to the minimum size portals can be.
+#Example: You don't want people making portals smaller than the normal minecraft size, so you set it to 6.
+min-portal-size: 2
+#Set this to false if you don't want VariablePortalSizes to check for updates.
+check-update: true

@@ -1,0 +1,10 @@
+main: info.gomeow.portalsizes.PortalSizes
+name: VariablePortalSizes
+version: ${project.version}
+
+permissions:
+  variableportalsizes.*:
+    children:
+      variableportalsizes.abnormal: true
+  variableportalsizes.abnormal:
+    default: true
