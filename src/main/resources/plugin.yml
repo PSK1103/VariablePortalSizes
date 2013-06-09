@@ -2,6 +2,8 @@ main: info.gomeow.portalsizes.PortalSizes
 name: VariablePortalSizes
 version: ${project.version}
 
+author: gomeow
+
 permissions:
   variableportalsizes.*:
     children:
