@@ -46,6 +46,9 @@ public class PortalSizesListener implements Listener {
                             } catch(StackOverflowError e) {
                                 cancel = true;
                             }
+                            if(blocksToSet.size() < plugin.min) {
+                                cancel = true;
+                            }
                             if(!cancel) {
                                 int size = blocksToSet.size();
                                 if(size != 6) {
@@ -110,6 +113,7 @@ public class PortalSizesListener implements Listener {
         public void checkArea(Block block, Way w, ArrayList<Block> blocksToSet) {
             if(blocksToSet.size() >= plugin.max) {
                 cancel = true;
+                return;
             }
             if(!cancel) {
                 Block side1;
@@ -188,6 +192,7 @@ public class PortalSizesListener implements Listener {
                         }
                         if(side.getType() != Material.PORTAL && side.getType() != Material.OBSIDIAN) {
                             cancel = true;
+                            killPortal(b, w);
                             return;
                         }
                     }
