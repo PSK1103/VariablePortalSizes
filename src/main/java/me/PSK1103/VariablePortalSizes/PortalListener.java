@@ -1,4 +1,4 @@
-package info.gomeow.portalsizes;
+package me.PSK1103.VariablePortalSizes;
 
 import java.util.ArrayList;
 
@@ -14,11 +14,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class PortalSizesListener implements Listener {
+public class PortalListener implements Listener {
 
-    PortalSizes plugin;
+    VariablePortalSizes plugin;
 
-    public PortalSizesListener(PortalSizes ps) {
+    public PortalListener(VariablePortalSizes ps) {
         plugin = ps;
     }
 
@@ -34,12 +34,12 @@ public class PortalSizesListener implements Listener {
         public HandleInteract(PlayerInteractEvent event) {
             Player player = event.getPlayer();
             if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                if(player.getItemInHand().getType() == Material.FLINT_AND_STEEL) {
+                if(player.getInventory().getItemInMainHand().getType() == Material.FLINT_AND_STEEL) {
                     BlockFace bf = event.getBlockFace();
                     Block block = event.getClickedBlock();
                     if(block.getType() == Material.OBSIDIAN) {
                         Block possiblePortal = block.getRelative(bf);
-                        if(possiblePortal.getType() != Material.PORTAL) {
+                        if(possiblePortal.getType() != Material.NETHER_PORTAL) {
                             ArrayList<Block> blocksToSet = new ArrayList<Block>();
                             try {
                                 checkArea(possiblePortal, Way.NORTH_SOUTH, blocksToSet);
@@ -50,15 +50,8 @@ public class PortalSizesListener implements Listener {
                                 cancel = true;
                             }
                             if(!cancel) {
-                                int size = blocksToSet.size();
-                                if(size != 6) {
-                                    if(!player.hasPermission("variableportalsizes.abnormal")) {
-                                        player.sendMessage(ChatColor.RED + "You do not have permission to do that!");
-                                        return;
-                                    }
-                                }
                                 for(Block b:blocksToSet) {
-                                    b.setTypeIdAndData(Material.PORTAL.getId(), (byte) 0, false);
+                                    b.setType(Material.NETHER_PORTAL);
                                 }
                             }
                             blocksToSet.clear();
@@ -76,12 +69,12 @@ public class PortalSizesListener implements Listener {
         public void tryEastWest(PlayerInteractEvent event) {
             Player player = event.getPlayer();
             if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                if(player.getItemInHand().getType() == Material.FLINT_AND_STEEL) {
+                if(player.getInventory().getItemInMainHand().getType() == Material.FLINT_AND_STEEL) {
                     BlockFace bf = event.getBlockFace();
                     Block block = event.getClickedBlock();
                     if(block.getType() == Material.OBSIDIAN) {
                         Block possiblePortal = block.getRelative(bf);
-                        if(possiblePortal.getType() != Material.PORTAL) {
+                        if(possiblePortal.getType() != Material.NETHER_PORTAL) {
                             ArrayList<Block> blocksToSet = new ArrayList<Block>();
                             try {
                                 checkArea(possiblePortal, Way.EAST_WEST, blocksToSet);
@@ -100,7 +93,7 @@ public class PortalSizesListener implements Listener {
                                     }
                                 }
                                 for(Block b:blocksToSet) {
-                                    b.setTypeIdAndData(Material.PORTAL.getId(), (byte) 0, false);
+                                    b.setType(Material.NETHER_PORTAL);
                                 }
                             }
                             blocksToSet.clear();
@@ -174,7 +167,7 @@ public class PortalSizesListener implements Listener {
         public void killPortal(Block b, Way w) {
             Block[] sides = {b.getRelative(BlockFace.UP), b.getRelative(BlockFace.DOWN), b.getRelative((w == Way.NORTH_SOUTH) ? BlockFace.NORTH : BlockFace.EAST), b.getRelative((w == Way.NORTH_SOUTH) ? BlockFace.SOUTH : BlockFace.WEST)};
             for(Block side:sides) {
-                if(side.getType() == Material.PORTAL) {
+                if(side.getType() == Material.NETHER_PORTAL) {
                     side.setType(Material.AIR);
                     killPortal(side, w);
                 }
@@ -186,11 +179,11 @@ public class PortalSizesListener implements Listener {
                 Block[] sides = {b.getRelative(BlockFace.UP), b.getRelative(BlockFace.DOWN), b.getRelative((w == Way.NORTH_SOUTH) ? BlockFace.NORTH : BlockFace.EAST), b.getRelative((w == Way.NORTH_SOUTH) ? BlockFace.SOUTH : BlockFace.WEST)};
                 for(Block side:sides) {
                     if(!blocks.contains(side)) {
-                        if(side.getType() == Material.PORTAL) {
+                        if(side.getType() == Material.NETHER_PORTAL) {
                             blocks.add(side);
                             checkAround(side, w);
                         }
-                        if(side.getType() != Material.PORTAL && side.getType() != Material.OBSIDIAN) {
+                        if(side.getType() != Material.NETHER_PORTAL && side.getType() != Material.OBSIDIAN) {
                             cancel = true;
                             killPortal(b, w);
                             return;
@@ -217,7 +210,7 @@ public class PortalSizesListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPhysics(BlockPhysicsEvent event) {
         Block b = event.getBlock();
-        if(b.getType() == Material.PORTAL) {
+        if(b.getType() == Material.NETHER_PORTAL) {
             new HandlePhysics(event, b);
         }
     }
