@@ -1,12 +1,16 @@
-main: info.gomeow.portalsizes.PortalSizes
+main: me.PSK1103.VariablePortalSizes.VariablePortalSizes
 name: VariablePortalSizes
-version: ${project.version}
+api-version: "1.14"
+version: 1.0.0
 
-author: gomeow
+author: PSK1103
 
 permissions:
-  variableportalsizes.*:
-    children:
-      variableportalsizes.abnormal: true
-  variableportalsizes.abnormal:
-    default: true
+  variableportalsizes.reload:
+    default: op
+
+commands:
+  variableportalsizes:
+    description: Reloads config
+    aliases: [vps, variableportalsizes]
+    usage: /vps reload

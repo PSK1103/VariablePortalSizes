@@ -1,8 +1,8 @@
-package me.PSK1103.VariablePortalSizes;
+package me.PSK1103.VariablePortalSizes.util;
 
 import java.util.ArrayList;
 
-import org.bukkit.ChatColor;
+import me.PSK1103.VariablePortalSizes.VariablePortalSizes;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -16,15 +16,15 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class PortalListener implements Listener {
 
-    VariablePortalSizes plugin;
+    private final VariablePortalSizes plugin;
 
-    public PortalListener(VariablePortalSizes ps) {
-        plugin = ps;
+    public PortalListener(VariablePortalSizes plugin) {
+        this.plugin = plugin;
     }
 
-    static enum Way {
+    enum Way {
         NORTH_SOUTH,
-        EAST_WEST;
+        EAST_WEST
     }
 
     class HandleInteract {
@@ -37,10 +37,10 @@ public class PortalListener implements Listener {
                 if(player.getInventory().getItemInMainHand().getType() == Material.FLINT_AND_STEEL) {
                     BlockFace bf = event.getBlockFace();
                     Block block = event.getClickedBlock();
-                    if(block.getType() == Material.OBSIDIAN) {
+                    if(block.getType() == Material.OBSIDIAN || block.getType() == Material.CRYING_OBSIDIAN) {
                         Block possiblePortal = block.getRelative(bf);
                         if(possiblePortal.getType() != Material.NETHER_PORTAL) {
-                            ArrayList<Block> blocksToSet = new ArrayList<Block>();
+                            ArrayList<Block> blocksToSet = new ArrayList<>();
                             try {
                                 checkArea(possiblePortal, Way.NORTH_SOUTH, blocksToSet);
                             } catch(StackOverflowError e) {
@@ -51,7 +51,7 @@ public class PortalListener implements Listener {
                             }
                             if(!cancel) {
                                 for(Block b:blocksToSet) {
-                                    b.setType(Material.NETHER_PORTAL);
+                                    b.setType(Material.NETHER_PORTAL,false);
                                 }
                             }
                             blocksToSet.clear();
@@ -72,10 +72,10 @@ public class PortalListener implements Listener {
                 if(player.getInventory().getItemInMainHand().getType() == Material.FLINT_AND_STEEL) {
                     BlockFace bf = event.getBlockFace();
                     Block block = event.getClickedBlock();
-                    if(block.getType() == Material.OBSIDIAN) {
+                    if(block.getType() == Material.OBSIDIAN || block.getType() == Material.CRYING_OBSIDIAN) {
                         Block possiblePortal = block.getRelative(bf);
                         if(possiblePortal.getType() != Material.NETHER_PORTAL) {
-                            ArrayList<Block> blocksToSet = new ArrayList<Block>();
+                            ArrayList<Block> blocksToSet = new ArrayList<>();
                             try {
                                 checkArea(possiblePortal, Way.EAST_WEST, blocksToSet);
                             } catch(StackOverflowError e) {
@@ -85,15 +85,8 @@ public class PortalListener implements Listener {
                                 cancel = true;
                             }
                             if(!cancel) {
-                                int size = blocksToSet.size();
-                                if(size != 6) {
-                                    if(!player.hasPermission("variableportalsizes.abnormal")) {
-                                        player.sendMessage(ChatColor.RED + "You do not have permission to do that!");
-                                        return;
-                                    }
-                                }
                                 for(Block b:blocksToSet) {
-                                    b.setType(Material.NETHER_PORTAL);
+                                    b.setType(Material.NETHER_PORTAL,false);
                                 }
                             }
                             blocksToSet.clear();
@@ -136,16 +129,16 @@ public class PortalListener implements Listener {
                     blocksToSet.add(down);
                     checkArea(down, w, blocksToSet);
                 }
-                if(side1.getType() != Material.OBSIDIAN && side1.getType() != Material.AIR) {
+                if(side1.getType() != Material.OBSIDIAN  && block.getType() != Material.CRYING_OBSIDIAN && side1.getType() != Material.AIR) {
                     cancel = true;
                 }
-                if(side2.getType() != Material.OBSIDIAN && side2.getType() != Material.AIR) {
+                if(side2.getType() != Material.OBSIDIAN && block.getType() != Material.CRYING_OBSIDIAN && side2.getType() != Material.AIR) {
                     cancel = true;
                 }
-                if(up.getType() != Material.OBSIDIAN && up.getType() != Material.AIR) {
+                if(up.getType() != Material.OBSIDIAN && block.getType() != Material.CRYING_OBSIDIAN && up.getType() != Material.AIR) {
                     cancel = true;
                 }
-                if(down.getType() != Material.OBSIDIAN && down.getType() != Material.AIR) {
+                if(down.getType() != Material.OBSIDIAN && block.getType() != Material.CRYING_OBSIDIAN && down.getType() != Material.AIR) {
                     cancel = true;
                 }
             }
@@ -162,7 +155,7 @@ public class PortalListener implements Listener {
 
         boolean cancel = false;
 
-        ArrayList<Block> blocks = new ArrayList<Block>();
+        ArrayList<Block> blocks = new ArrayList<>();
 
         public void killPortal(Block b, Way w) {
             Block[] sides = {b.getRelative(BlockFace.UP), b.getRelative(BlockFace.DOWN), b.getRelative((w == Way.NORTH_SOUTH) ? BlockFace.NORTH : BlockFace.EAST), b.getRelative((w == Way.NORTH_SOUTH) ? BlockFace.SOUTH : BlockFace.WEST)};
@@ -183,7 +176,7 @@ public class PortalListener implements Listener {
                             blocks.add(side);
                             checkAround(side, w);
                         }
-                        if(side.getType() != Material.NETHER_PORTAL && side.getType() != Material.OBSIDIAN) {
+                        if(side.getType() != Material.NETHER_PORTAL && side.getType() != Material.OBSIDIAN && side.getType() != Material.CRYING_OBSIDIAN) {
                             cancel = true;
                             killPortal(b, w);
                             return;
